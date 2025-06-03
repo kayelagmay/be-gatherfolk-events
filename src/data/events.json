@@ -1,0 +1,19 @@
+[
+    {
+      "id": "1",
+      "title": "Community Garden Meetup",
+      "date": "2025-06-10T14:00:00Z",
+      "location": "Local Community Center",
+      "description": "Join us to help plant summer flowers.",
+      "category": "Community"
+    },
+    {
+      "id": "2",
+      "title": "Art Workshop for Beginners",
+      "date": "2025-06-12T17:00:00Z",
+      "location": "Art Studio Downtown",
+      "description": "Learn basic watercolor techniques.",
+      "category": "Workshop"
+    }
+  ]
+  
