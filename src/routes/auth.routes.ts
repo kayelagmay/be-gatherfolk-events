@@ -1,10 +1,10 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import axios from "axios";
 
 const router = express.Router();
 
 // Step 1: Redirect user to Google OAuth URL
-router.get("/google/callback", async (req: Request, res: Response) => {
+router.get("/google", (req, res) => {
   const rootUrl = "https://accounts.google.com/o/oauth2/v2/auth";
 
   const options = {
@@ -58,14 +58,12 @@ router.get("/google/callback", async (req, res) => {
         console.log("ID Token:", id_token); // contains user info
 
         // For now, redirect back to frontend
-    return res.redirect(`${process.env.FRONTEND_URL}/calendar-success?access_token=${access_token}`);
-
+    return res.redirect(`${process.env.FRONTEND_URL}/calendar-success`);
   } 
     catch (error) {
     console.error("Failed to exchange code for tokens", error);
     return res.status(500).send("Authentication failed");
   }
 });
-
 
 export default router;
