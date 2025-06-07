@@ -1,10 +1,10 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import axios from "axios";
 
 const router = express.Router();
 
 // Step 1: Redirect user to Google OAuth URL
-router.get("/google", (req, res) => {
+router.get("/google/callback", async (req: Request, res: Response) => {
   const rootUrl = "https://accounts.google.com/o/oauth2/v2/auth";
 
   const options = {
