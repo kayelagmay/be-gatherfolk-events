@@ -21,24 +21,3 @@ export const getGoogleEvents = async (req: Request, res: Response) => {
   }
 };
 
-// const token = process.env.EVENTBRITE_API_KEY;
-
-// export const getAllEvents = async (req: Request, res: Response) => {
-//   try {
-//     const response = await axios.get("https://www.eventbriteapi.com/v3/users/me/", {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     });
-
-//     const events = response.data.events;
-//     res.status(200).json({ events });
-//   } catch (error: any) {
-//     console.error("Error fetching events:", error.response?.data || error.message);
-//     res.status(500).json({ message: "Failed to fetch events" });
-//   }
-// };
-
-// console.log("Token:", process.env.EVENTBRITE_API_KEY);
-
-

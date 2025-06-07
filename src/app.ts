@@ -23,6 +23,6 @@ app.use(cors({
 app.use("/api", eventsRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/calendar", calendarRoutes);
-app.use("/api/events", manageEventsRoutes);
+app.use("/api/manage-events", manageEventsRoutes);
 
 export default app;
