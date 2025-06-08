@@ -14,7 +14,7 @@ router.get("/google", (req, res) => {
     response_type: "code",
     prompt: "consent", // force refresh token every time (good for dev)
     scope: [
-      "https://www.googleapis.com/auth/calendar.events",
+      "https://www.googleapis.com/auth/calendar.readonly",
       "profile",
       "email"
     ].join(" "),
