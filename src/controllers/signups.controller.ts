@@ -5,9 +5,6 @@ export const signupForEvent = async (req: Request, res: Response) => {
   const eventId = Number(req.params.id);
   const { name, email } = req.body;
 
-  console.log('📥 signupForEvent called:', { eventId, body: req.body });
-
-  // Basic validation
   if (
     typeof name !== 'string' || name.trim() === '' ||
     typeof email !== 'string' || !/^[^@]+@[^@]+\.[^@]+$/.test(email)
@@ -21,8 +18,6 @@ export const signupForEvent = async (req: Request, res: Response) => {
       .from('signups')
       .insert([{ event_id: eventId, name: name.trim(), email: email.trim() }])
       .single();
-
-    console.log('🗃  Supabase insert result:', { data, error });
 
     if (error) {
       console.error('❌ Supabase error:', error);

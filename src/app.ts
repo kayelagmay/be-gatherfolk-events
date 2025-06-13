@@ -10,9 +10,7 @@ import authRoutes from './routes/auth.routes';
 
 const app = express();
 
-// log every incoming request
 app.use((req, _res, next) => {
-  console.log(`👉 ${req.method} ${req.originalUrl}`);
   next();
 });
 

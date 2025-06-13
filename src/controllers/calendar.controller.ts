@@ -4,17 +4,14 @@ import { createEvent } from 'ics';
 import type { EventAttributes } from 'ics';
 
 export const generateIcs = async (req: Request, res: Response) => {
-  console.log('🗒️  generateIcs called with eventId=', req.params.eventId);
   const eventId = Number(req.params.eventId);
 
-  // Query Supabase for a single event
   const { data: ev, error } = await supabase
     .from('events')
     .select('*')
     .eq('id', eventId)
     .single();
 
-  // Handle errors
   if (error) {
     console.error('Supabase error:', error);
     return res.status(500).send('Database error');
@@ -23,11 +20,9 @@ export const generateIcs = async (req: Request, res: Response) => {
     return res.status(404).send('Event not found');
   }
 
-  // Parse dates
   const start = new Date(ev.start_date);
   const end = ev.end_date ? new Date(ev.end_date) : start;
 
-  // Build ICS payload
   const icsEvent: EventAttributes = {
     start: [
       start.getUTCFullYear(),
@@ -49,8 +44,6 @@ export const generateIcs = async (req: Request, res: Response) => {
     uid:         `event-${eventId}@gatherfolk.events`,
     productId:   'GatherfolkEvents',
   };
-
-  console.log('📑 Prepared ICS event:', icsEvent);
 
   createEvent(icsEvent, (err, value) => {
     if (err) {
