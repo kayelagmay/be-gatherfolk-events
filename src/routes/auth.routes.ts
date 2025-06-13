@@ -1,69 +1,37 @@
-import express from "express";
-import axios from "axios";
+import { Router, Request, Response } from 'express';
 
-const router = express.Router();
+const router = Router();
 
-// Step 1: Redirect user to Google OAuth URL
-router.get("/google", (req, res) => {
-  const rootUrl = "https://accounts.google.com/o/oauth2/v2/auth";
-
-  const options = {
-    redirect_uri: process.env.GOOGLE_REDIRECT_URI!,
-    client_id: process.env.GOOGLE_CLIENT_ID!,
-    access_type: "offline", // important to get refresh token!
-    response_type: "code",
-    prompt: "consent", // force refresh token every time (good for dev)
-    scope: [
-      "https://www.googleapis.com/auth/calendar.readonly",
-      "profile",
-      "email"
-    ].join(" "),
-  };
-
-  const qs = new URLSearchParams(options);
-
-  res.redirect(`${rootUrl}?${qs.toString()}`);
+router.post('/login', async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Email and password required' });
+  }
+  if (
+    email === process.env.ADMIN_EMAIL &&
+    password === process.env.ADMIN_PASSWORD
+  ) {
+    return res.json({ token: process.env.ADMIN_TOKEN });
+  }
+  return res.status(401).json({ message: 'Invalid credentials' });
 });
 
-// Step 2: Handle Google callback with code → exchange for tokens
-router.get("/google/callback", async (req, res) => {
-    try {
-        const code = req.query.code as string;
-    
-        if (!code) {
-          return res.status(400).send("No code in the callback");
-        }
-    
-        const tokenResponse = await axios.post(
-            "https://oauth2.googleapis.com/token",
-            {
-                code,
-                client_id: process.env.GOOGLE_CLIENT_ID!,
-                client_secret: process.env.GOOGLE_CLIENT_SECRET!,
-                redirect_uri: process.env.GOOGLE_REDIRECT_URI!,
-                grant_type: "authorization_code",
-            },
-            {
-                headers: {
-                "Content-Type": "application/json",
-                },
-            }
-        );
-
-        const { access_token, refresh_token, id_token } = tokenResponse.data;
-
-        // Save tokens in your database here (for now console log)
-        console.log("Access Token:", access_token);
-        console.log("Refresh Token:", refresh_token);
-        console.log("ID Token:", id_token); // contains user info
-
-        // For now, redirect back to frontend
-    return res.redirect(`${process.env.FRONTEND_URL}/calendar-success`);
-  } 
-    catch (error) {
-    console.error("Failed to exchange code for tokens", error);
-    return res.status(500).send("Authentication failed");
+router.get('/me', (req: Request, res: Response) => {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader || typeof authHeader !== 'string') {
+    return res.status(401).json({ message: 'Authorization required' });
   }
+  const [scheme, token] = authHeader.split(' ');
+  if (scheme !== 'Bearer' || token !== process.env.ADMIN_TOKEN) {
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+  return res.json({ user: { role: 'staff' } });
+});
+
+
+router.post('/logout', (_req: Request, res: Response) => {
+  
+  res.json({ message: 'Logged out' });
 });
 
 export default router;
